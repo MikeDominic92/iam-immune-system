@@ -1,0 +1,181 @@
+# Detection Rules Configuration
+# Configure detection modules and their behavior
+
+detectors:
+  # Public S3 Bucket Detection
+  public_bucket:
+    enabled: true
+    severity: critical
+    auto_remediate: true
+    risk_threshold: 60  # Auto-remediate if risk score >= 60
+    whitelist_buckets:
+      - public-website-bucket
+      - cdn-assets-bucket
+    sensitive_keywords:
+      - pii
+      - phi
+      - backup
+      - logs
+      - audit
+      - compliance
+      - customer
+      - payment
+      - credential
+      - secret
+
+  # Unauthorized Admin Grant Detection
+  admin_grant:
+    enabled: true
+    severity: high
+    auto_remediate: true
+    risk_threshold: 70  # Auto-remediate if risk score >= 70
+    whitelist_principals:
+      - admin@company.com
+      - security-team@company.com
+      - terraform-service-account@project.iam.gserviceaccount.com
+    monitored_actions:
+      - AttachUserPolicy
+      - AttachGroupPolicy
+      - AttachRolePolicy
+      - PutUserPolicy
+      - PutGroupPolicy
+      - PutRolePolicy
+      - CreateAccessKey
+      - UpdateAssumeRolePolicy
+    admin_policies:
+      - AdministratorAccess
+      - PowerUserAccess
+      - IAMFullAccess
+      - SecurityAudit
+
+  # Policy Change Detection
+  policy_change:
+    enabled: true
+    severity: high
+    auto_remediate: false  # Require manual approval for policy changes
+    risk_threshold: 85  # Only auto-remediate critical policy changes
+    monitored_actions:
+      - CreatePolicy
+      - CreatePolicyVersion
+      - SetDefaultPolicyVersion
+      - DeletePolicy
+      - DeletePolicyVersion
+      - DetachRolePolicy
+      - DetachUserPolicy
+      - DetachGroupPolicy
+    critical_services:
+      - iam
+      - kms
+      - cloudtrail
+      - guardduty
+      - config
+      - securityhub
+      - cloudwatch
+      - logs
+    alert_on_deletion: true
+
+  # Cross-Account Access Detection
+  cross_account:
+    enabled: true
+    severity: medium
+    auto_remediate: false  # Alert only, manual review required
+    risk_threshold: 80
+    trusted_accounts:
+      - "123456789012"  # Production account
+      - "234567890123"  # Staging account
+    monitored_actions:
+      - AssumeRole
+      - GetFederationToken
+      - GetSessionToken
+    require_external_id: true
+    max_session_duration: 43200  # 12 hours
+
+# Machine Learning Configuration
+ml_detection:
+  enabled: true
+  anomaly_threshold: 0.7  # 0-1 scale, higher = more strict
+  model_retraining_frequency: daily
+  baseline_days: 30
+  min_events_for_training: 100
+  features:
+    - hour_of_day
+    - day_of_week
+    - is_weekend
+    - is_off_hours
+    - source_ip_entropy
+    - user_agent_entropy
+    - event_count_1h
+    - event_count_24h
+    - unique_actions_1h
+    - unique_resources_1h
+    - is_cross_account
+    - is_admin_action
+    - is_policy_change
+    - is_s3_action
+    - request_size
+
+# Global Settings
+global:
+  # Whitelist specific actions that are always allowed
+  whitelisted_actions:
+    - iam:GetRole
+    - iam:ListRoles
+    - iam:GetUser
+    - iam:ListUsers
+    - s3:GetBucketLocation
+    - s3:ListBucket
+
+  # IP ranges to trust (e.g., corporate VPN)
+  trusted_ip_ranges:
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 192.168.0.0/16
+
+  # Business hours (UTC)
+  business_hours:
+    start: 6
+    end: 22
+    timezone: UTC
+
+  # Rate limiting
+  rate_limits:
+    max_events_per_minute: 100
+    max_detections_per_hour: 50
+
+# Notification Settings
+notifications:
+  slack:
+    enabled: true
+    channels:
+      critical: "#security-critical"
+      high: "#security-alerts"
+      medium: "#security-monitoring"
+      low: "#security-info"
+    mention_on_critical: true
+    usergroup: "@security-team"
+
+  teams:
+    enabled: true
+    webhook_url_secret: teams-webhook-url
+
+  email:
+    enabled: true
+    recipients:
+      critical:
+        - security-team@company.com
+        - ciso@company.com
+      high:
+        - security-team@company.com
+      medium:
+        - security-monitoring@company.com
+
+  # Create incident tickets automatically
+  ticketing:
+    enabled: true
+    system: jira  # or servicenow, pagerduty
+    project: SEC
+    severity_mapping:
+      critical: P1
+      high: P2
+      medium: P3
+      low: P4

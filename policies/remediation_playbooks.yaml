@@ -1,0 +1,249 @@
+# Remediation Playbooks Configuration
+# Define automated remediation actions for each threat type
+
+playbooks:
+  # Public S3 Bucket Remediation
+  public_bucket_remediation:
+    name: Block Public S3 Bucket Access
+    severity: critical
+    auto_execute: true
+    require_approval: false
+    actions:
+      - type: block_public_access
+        description: Enable S3 Block Public Access on bucket
+        parameters:
+          block_public_acls: true
+          ignore_public_acls: true
+          block_public_policy: true
+          restrict_public_buckets: true
+
+      - type: remove_public_policy
+        description: Remove public bucket policy if present
+
+      - type: set_acl_private
+        description: Set bucket ACL to private
+
+      - type: disable_static_website
+        description: Disable static website hosting
+
+      - type: notify_slack
+        description: Send alert to Slack
+        parameters:
+          channel: "#security-critical"
+          priority: critical
+
+      - type: create_incident
+        description: Create security incident ticket
+        parameters:
+          severity: P1
+          assignee: security-team
+
+      - type: log_remediation
+        description: Log remediation action to Cloud Logging
+
+  # Unauthorized Admin Grant Remediation
+  admin_grant_remediation:
+    name: Revoke Unauthorized Admin Access
+    severity: high
+    auto_execute: true
+    require_approval: false  # Auto-revoke for high-risk scores
+    actions:
+      - type: revoke_policy_attachment
+        description: Detach unauthorized admin policy
+        parameters:
+          backup_policy: true  # Backup before deletion
+
+      - type: delete_inline_policy
+        description: Delete unauthorized inline policy
+        parameters:
+          backup_policy: true
+
+      - type: disable_access_key
+        description: Disable any newly created access keys
+        parameters:
+          backup_key_id: true
+
+      - type: force_mfa_challenge
+        description: Require MFA re-authentication
+        parameters:
+          timeout: 300  # 5 minutes
+
+      - type: notify_teams
+        description: Send alert to Microsoft Teams
+        parameters:
+          priority: high
+
+      - type: notify_user
+        description: Notify affected user via email
+        parameters:
+          template: unauthorized_access_revoked
+
+      - type: create_incident
+        description: Create security incident
+        parameters:
+          severity: P2
+
+  # Policy Change Remediation
+  policy_change_remediation:
+    name: Revert Dangerous Policy Change
+    severity: high
+    auto_execute: false  # Require manual approval
+    require_approval: true
+    approval_required_from:
+      - security-team@company.com
+      - iam-admin@company.com
+    actions:
+      - type: backup_current_policy
+        description: Backup current policy version
+
+      - type: revert_policy_version
+        description: Revert to previous policy version
+        parameters:
+          version: previous
+
+      - type: attach_deny_policy
+        description: Attach temporary deny policy
+        parameters:
+          duration: 3600  # 1 hour
+
+      - type: notify_slack
+        description: Alert security team
+        parameters:
+          channel: "#security-critical"
+          priority: high
+
+      - type: request_approval
+        description: Request approval for permanent fix
+        parameters:
+          approvers:
+            - security-team@company.com
+          timeout: 1800  # 30 minutes
+
+      - type: create_incident
+        description: Create incident for review
+        parameters:
+          severity: P2
+
+  # Cross-Account Access Remediation
+  cross_account_remediation:
+    name: Secure Cross-Account Access
+    severity: medium
+    auto_execute: false  # Alert and monitor only
+    require_approval: true
+    actions:
+      - type: attach_temporary_deny
+        description: Attach temporary deny policy to role
+        parameters:
+          duration: 1800  # 30 minutes
+          allow_revert: true
+
+      - type: require_mfa
+        description: Enforce MFA for role assumption
+        parameters:
+          update_trust_policy: true
+
+      - type: shorten_session_duration
+        description: Reduce max session duration
+        parameters:
+          max_duration: 3600  # 1 hour
+
+      - type: notify_slack
+        description: Alert security team
+        parameters:
+          channel: "#security-alerts"
+          priority: medium
+
+      - type: monitor_session
+        description: Enable enhanced monitoring for session
+        parameters:
+          cloudtrail_insights: true
+
+      - type: create_incident
+        description: Create monitoring ticket
+        parameters:
+          severity: P3
+
+  # ML Anomaly Remediation
+  ml_anomaly_remediation:
+    name: Investigate ML-Detected Anomaly
+    severity: varies  # Depends on anomaly score
+    auto_execute: false
+    require_approval: true
+    actions:
+      - type: gather_context
+        description: Collect additional event context
+        parameters:
+          lookback_hours: 24
+          include_related_events: true
+
+      - type: analyze_user_behavior
+        description: Analyze user's recent behavior pattern
+
+      - type: check_user_location
+        description: Verify user location against baseline
+
+      - type: notify_slack
+        description: Alert for manual investigation
+        parameters:
+          channel: "#security-monitoring"
+          priority: medium
+
+      - type: create_investigation
+        description: Create investigation case
+        parameters:
+          severity: P3
+          auto_assign: ml-investigation-team
+
+# Remediation Settings
+settings:
+  # Dry run mode - log actions but don't execute
+  dry_run: false
+
+  # Require approval for critical actions
+  require_approval_for_severity:
+    - critical
+
+  # Timeout for approval requests
+  approval_timeout: 3600  # 1 hour
+
+  # Automatic rollback if remediation fails
+  auto_rollback: true
+
+  # Maximum retries for failed actions
+  max_retries: 3
+
+  # Delay between retries (seconds)
+  retry_delay: 60
+
+  # Enable audit logging for all remediation actions
+  audit_logging: true
+
+  # Backup before destructive actions
+  backup_before_delete: true
+
+  # Notification on remediation completion
+  notify_on_completion: true
+
+# Escalation Rules
+escalation:
+  # Escalate if remediation fails after max retries
+  on_failure:
+    notify:
+      - security-team@company.com
+      - soc@company.com
+    create_incident: true
+    severity: P1
+
+  # Escalate if approval timeout expires
+  on_approval_timeout:
+    notify:
+      - security-manager@company.com
+    escalate_severity: true
+
+  # Escalate critical events immediately
+  immediate_escalation:
+    severity: critical
+    notify:
+      - ciso@company.com
+      - security-team@company.com
+    create_pagerduty_alert: true
