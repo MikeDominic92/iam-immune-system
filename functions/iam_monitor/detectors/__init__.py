@@ -6,6 +6,7 @@ This package contains detectors for various IAM security threats including:
 - Unauthorized admin grants
 - Policy tampering
 - Cross-account anomalies
+- Machine identity (non-human) monitoring
 """
 
 from abc import ABC, abstractmethod
@@ -99,6 +100,7 @@ from .public_bucket import PublicBucketDetector
 from .admin_grant import AdminGrantDetector
 from .policy_change import PolicyChangeDetector
 from .cross_account import CrossAccountDetector
+from .machine_identity import MachineIdentityDetector
 
 __all__ = [
     'BaseDetector',
@@ -107,5 +109,6 @@ __all__ = [
     'PublicBucketDetector',
     'AdminGrantDetector',
     'PolicyChangeDetector',
-    'CrossAccountDetector'
+    'CrossAccountDetector',
+    'MachineIdentityDetector'
 ]
