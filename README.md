@@ -322,8 +322,29 @@ Key architectural decisions are documented in [docs/decisions/](docs/decisions/)
 
 This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details.
 
+## Frontend Dashboard
+
+A modern React/Next.js frontend is available with a bio-organic dark stealth aesthetic:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend will open at `http://localhost:3000`
+
+**Frontend Screenshots:**
+
+| Dashboard | Detection Center | Remediation |
+|-----------|-----------------|-------------|
+| ![Dashboard](docs/screenshots/immune_dashboard_verification_1764616411409.png) | ![Detection](docs/screenshots/detection_center_verification_1764616434845.png) | ![Remediation](docs/screenshots/remediation_console_verification_1764616456695.png) |
+
+See [Frontend Walkthrough](docs/FRONTEND_WALKTHROUGH.md) for full documentation.
+
 ## Roadmap
 
+- [x] React dashboard frontend
 - [ ] Support for Azure AD integration
 - [ ] Custom ML model training UI
 - [ ] Terraform module registry publication
