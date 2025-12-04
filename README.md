@@ -1,404 +1,559 @@
-# IAM Immune System
+<p align="center">
+  <img src="docs/screenshots/immune_dashboard_verification_1764616411409.png" alt="IAM Immune System" width="800"/>
+</p>
 
-[![CI](https://github.com/MikeDominic92/iam-immune-system/workflows/CI/badge.svg)](https://github.com/MikeDominic92/iam-immune-system/actions)
-[![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Security](https://img.shields.io/badge/security-hardened-green.svg)](docs/SECURITY.md)
+<h1 align="center">IAM Immune System</h1>
+<h3 align="center">Event-Driven Security Automation with SailPoint IGA Integration</h3>
 
-> Event-driven security automation that detects and auto-remediates dangerous IAM changes in real-time using AI/ML anomaly detection.
+<p align="center">
+  <img src="https://img.shields.io/badge/python-3.11+-blue.svg" alt="Python"/>
+  <img src="https://img.shields.io/badge/GCP-Cloud_Functions-4285F4.svg" alt="GCP"/>
+  <img src="https://img.shields.io/badge/Terraform-Infrastructure-844FBA.svg" alt="Terraform"/>
+  <img src="https://img.shields.io/badge/SailPoint-IdentityIQ-0033A0.svg" alt="SailPoint"/>
+  <img src="https://img.shields.io/badge/version-1.1.0-purple.svg" alt="Version"/>
+</p>
+
+<p align="center">
+  <strong>Real-time threat detection and auto-remediation for cloud IAM with ML anomaly detection and SailPoint lifecycle integration</strong>
+</p>
+
+---
+
+## The Problem
+
+<table>
+<tr>
+<td width="50%">
+
+### Cloud IAM Changes Happen Faster Than Security Can React
+
+Enterprise challenges with cloud IAM:
+- **100s of IAM changes** daily across projects
+- **Misconfiguration** is #1 cloud security risk
+- **Public bucket** exposure happens in seconds
+- **Admin grants** can go unnoticed for weeks
+
+Manual IAM review cannot:
+- Detect threats in real-time
+- Correlate with identity lifecycle
+- Auto-remediate before damage
+- Scale with cloud growth
+
+</td>
+<td width="50%">
+
+### What Organizations Need
+
+Modern cloud security requires:
+- **Real-time event processing** for IAM changes
+- **ML anomaly detection** at scale
+- **Automated remediation** (block, revoke, alert)
+- **IGA integration** for identity context
+- **Low-cost serverless** architecture
+- **Multi-cloud visibility**
+
+**Think of it as an immune system for your cloud.**
+
+</td>
+</tr>
+</table>
+
+---
+
+## The Solution: IAM Immune System
+
+<p align="center">
+  <img src="docs/screenshots/detection_center_verification_1764616434845.png" alt="Detection Center" width="800"/>
+</p>
+
+Event-driven security automation powered by ML and IGA:
+
+| Capability | Technology | Outcome |
+|------------|------------|---------|
+| **Event Processing** | GCP Eventarc + Cloud Functions | Real-time IAM monitoring |
+| **Anomaly Detection** | Isolation Forest ML | Unusual pattern identification |
+| **Auto-Remediation** | Cloud Functions + IAM API | Block threats automatically |
+| **IGA Integration** | SailPoint IdentityIQ | Lifecycle context correlation |
+| **Risk Scoring** | ML-based scoring | 0-100 risk quantification |
+| **Alerting** | Slack, Teams, Email | Multi-channel notifications |
+
+---
 
 ## Screenshots
 
-### Dashboard Overview
-![Dashboard](docs/screenshots/iam_immune_dashboard_01.png)
+### Dashboard Views
 
-## Overview
+<table>
+<tr>
+<td align="center" width="33%">
+<img src="docs/screenshots/immune_dashboard_verification_1764616411409.png" alt="Dashboard"/>
+<br/><strong>Immune Dashboard</strong>
+<br/>Bio-organic dark theme
+</td>
+<td align="center" width="33%">
+<img src="docs/screenshots/detection_center_verification_1764616434845.png" alt="Detection"/>
+<br/><strong>Detection Center</strong>
+<br/>Real-time threat view
+</td>
+<td align="center" width="33%">
+<img src="docs/screenshots/remediation_console_verification_1764616456695.png" alt="Remediation"/>
+<br/><strong>Remediation Console</strong>
+<br/>Auto-remediation logs
+</td>
+</tr>
+</table>
 
-IAM Immune System is a production-ready security orchestration platform that monitors AWS IAM events, detects suspicious activities, and automatically remediates threats before they cause damage. Think of it as an immune system for your cloud infrastructure.
+### Additional Views
 
-### Key Features
+<table>
+<tr>
+<td align="center" width="50%">
+<img src="docs/screenshots/identity_monitor_verification_1764616478951.png" alt="Identity Monitor"/>
+<br/><strong>Identity Monitor</strong>
+<br/>SailPoint lifecycle events
+</td>
+<td align="center" width="50%">
+<img src="docs/screenshots/alert_management_verification_1764616502614.png" alt="Alerts"/>
+<br/><strong>Alert Management</strong>
+<br/>Multi-channel notifications
+</td>
+</tr>
+</table>
 
-- **Real-time Detection**: Monitors AWS CloudTrail events via GCP Eventarc
-- **AI/ML Anomaly Detection**: Uses Isolation Forest to identify unusual IAM patterns
-- **Auto-Remediation**: Automatically revokes unauthorized permissions and blocks public access
-- **Risk Scoring**: 0-100 risk scores for every detected event
-- **Multi-Channel Alerts**: Slack, Microsoft Teams, and email notifications
-- **Low Cost**: ~$15/month for typical workloads (see [Cost Analysis](docs/COST_ANALYSIS.md))
+---
+
+## Why SailPoint IdentityIQ? (v1.1)
+
+<table>
+<tr>
+<td width="60%">
+
+### The Integration Rationale
+
+SailPoint IdentityIQ was chosen for v1.1 because:
+
+1. **IGA Leader** - Gartner Magic Quadrant leader
+2. **Lifecycle Management** - Joiner/Mover/Leaver workflows
+3. **Access Certification** - Campaign-based reviews
+4. **Webhook Integration** - Real-time event delivery
+5. **Enterprise Adoption** - Fortune 500 standard
+
+### Skills Demonstrated
+
+- IGA (Identity Governance & Administration)
+- Webhook signature verification (HMAC-SHA256)
+- Lifecycle event processing
+- Access certification correlation
+- Combined identity health scoring
+
+</td>
+<td width="40%">
+
+### Before vs After
+
+| Metric | v1.0 | v1.1 |
+|--------|------|------|
+| IGA Integration | None | **SailPoint** |
+| Lifecycle Context | None | **JML Events** |
+| Cert Correlation | None | **Real-time** |
+| Identity Health | Limited | **Combined Score** |
+
+### Lifecycle Events Supported
+
+- Joiner (new employee)
+- Mover (role change)
+- Leaver (termination)
+- Access Request
+- Certification Decision
+- Password Reset
+
+</td>
+</tr>
+</table>
+
+---
 
 ## Architecture
 
 ```
-┌─────────────┐         ┌──────────────┐         ┌─────────────┐
-│   AWS       │         │     GCP      │         │   Actions   │
-│ CloudTrail  │────────▶│  Eventarc    │────────▶│             │
-│             │ Events  │              │ Trigger │  Detection  │
-└─────────────┘         └──────────────┘         │             │
-                                                  │  ML Model   │
-                                                  │             │
-                        ┌──────────────┐         │ Remediation │
-                        │   Pub/Sub    │◀────────│             │
-                        │              │  Alerts │   Logging   │
-                        └──────────────┘         └─────────────┘
-                               │
-                               ▼
-                        ┌──────────────┐
-                        │  Slack/Teams │
-                        │    Alerts    │
-                        └──────────────┘
+                               EVENT SOURCES
+    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+    │  AWS CloudTrail │    │  GCP Cloud      │    │    SailPoint    │
+    │  IAM Events     │    │  Audit Logs     │    │  IdentityIQ     │
+    │  ─────────────  │    │  ─────────────  │    │  ─────────────  │
+    │  CreateRole     │    │  SetIamPolicy   │    │  JML Events     │
+    │  AttachPolicy   │    │  CreateBucket   │    │  Certifications │
+    │  DeleteUser     │    │  UpdateKey      │    │  Access Requests│
+    └────────┬────────┘    └────────┬────────┘    └────────┬────────┘
+             │                      │                      │
+             └──────────────────────┼──────────────────────┘
+                                    │
+                                    ▼
+    ┌─────────────────────────────────────────────────────────────────┐
+    │                    GCP EVENTARC                                  │
+    │  ┌──────────────────────────────────────────────────────────┐  │
+    │  │  Event Routing + Filtering + Dead Letter Queue           │  │
+    │  └──────────────────────────────────────────────────────────┘  │
+    └─────────────────────────────┬───────────────────────────────────┘
+                                  │
+                                  ▼
+    ┌─────────────────────────────────────────────────────────────────┐
+    │                    CLOUD FUNCTIONS                               │
+    │                                                                  │
+    │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
+    │  │  Detectors   │  │ Remediators  │  │  SailPoint Handler   │  │
+    │  │ ────────────│  │ ────────────│  │ ────────────────────│  │
+    │  │ Public Bucket│  │ Block Public │  │ Lifecycle Events     │  │
+    │  │ Admin Grant  │  │ Revoke Access│  │ Cert Correlation     │  │
+    │  │ Policy Change│  │ Alert Team   │  │ Identity Health      │  │
+    │  │ Cross Account│  │ Quarantine   │  │ HMAC Verification    │  │
+    │  └──────────────┘  └──────────────┘  └──────────────────────┘  │
+    │                                                                  │
+    │  ┌──────────────┐  ┌──────────────┐                            │
+    │  │ ML Anomaly   │  │ Risk Scorer  │                            │
+    │  │ ────────────│  │ ────────────│                            │
+    │  │ Iso. Forest  │  │ Combined     │                            │
+    │  │ Baseline     │  │ Score 0-100  │                            │
+    │  └──────────────┘  └──────────────┘                            │
+    └─────────────────────────────┬───────────────────────────────────┘
+                                  │
+            ┌─────────────────────┼─────────────────────┐
+            ▼                     ▼                     ▼
+    ┌──────────────┐      ┌──────────────┐      ┌──────────────┐
+    │    React     │      │   BigQuery   │      │    Slack     │
+    │   Frontend   │      │   Events     │      │    Teams     │
+    │              │      │              │      │    Email     │
+    │ Bio-organic  │      │ Historical   │      │ Multi-chan   │
+    │ Dark Theme   │      │ Analysis     │      │ Alerts       │
+    └──────────────┘      └──────────────┘      └──────────────┘
 ```
+
+---
+
+## Detectors
+
+<table>
+<tr>
+<td width="50%">
+
+### Public Bucket Detector
+
+Detects when a GCP bucket is made publicly accessible.
+
+```python
+# Detection criteria
+- allUsers or allAuthenticatedUsers binding
+- Public IAM policy changes
+- Bucket ACL modifications
+```
+
+**Risk**: Public data exposure
+**Auto-Remediation**: Remove public binding
+
+### Admin Grant Detector
+
+Detects when admin/owner roles are granted.
+
+```python
+# Detection criteria
+- roles/owner
+- roles/editor
+- roles/*Admin
+- Custom roles with broad permissions
+```
+
+**Risk**: Privilege escalation
+**Auto-Remediation**: Revoke + alert
+
+</td>
+<td width="50%">
+
+### Policy Change Detector
+
+Detects suspicious IAM policy modifications.
+
+```python
+# Detection criteria
+- SetIamPolicy on sensitive resources
+- Service account key creation
+- Cross-project bindings
+```
+
+**Risk**: Unauthorized access
+**Auto-Remediation**: Alert + review
+
+### Machine Identity Detector
+
+Monitors service account activities.
+
+```python
+# Detection criteria
+- Service account impersonation
+- Key rotation anomalies
+- Unusual API patterns
+```
+
+**Risk**: Compromised service accounts
+**Auto-Remediation**: Quarantine + alert
+
+</td>
+</tr>
+</table>
+
+---
 
 ## Quick Start
 
 ### Prerequisites
-
 - Python 3.11+
-- GCP account with billing enabled
-- AWS account with CloudTrail enabled
-- Terraform 1.5+
+- Node.js 18+
+- GCP account with Cloud Functions enabled
+- Terraform (for infrastructure deployment)
 
 ### Installation
 
-1. **Clone the repository**
 ```bash
+# Clone repository
 git clone https://github.com/MikeDominic92/iam-immune-system.git
 cd iam-immune-system
-```
 
-2. **Set up Python environment**
-```bash
+# Backend setup
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-```
 
-3. **Configure environment variables**
-```bash
-cp .env.example .env
-# Edit .env with your credentials
-```
-
-4. **Deploy infrastructure**
-```bash
-cd terraform
-terraform init
-terraform plan
-terraform apply
-```
-
-5. **Deploy Cloud Function**
-```bash
-gcloud functions deploy iam-immune-system \
-  --gen2 \
-  --runtime python311 \
-  --region us-central1 \
-  --source functions/iam_monitor \
-  --entry-point handle_iam_event \
-  --trigger-topic iam-events
-```
-
-## Detection Capabilities
-
-### Threat Detection
-
-| Threat Type | Detection Method | Auto-Remediation |
-|-------------|------------------|------------------|
-| Public S3 Buckets | Policy analysis | Block public access |
-| Unauthorized Admin Grants | Permission comparison | Revoke permissions |
-| Policy Tampering | Change detection | Revert policy |
-| Cross-Account Anomalies | ML anomaly detection | Alert + MFA challenge |
-| Service Account Key Creation | Baseline deviation | Disable key |
-| Privilege Escalation | Attack pattern matching | Revoke + quarantine |
-| Machine Identity Threats | Behavioral analysis + pattern matching | Alert + credential rotation |
-
-### v1.1 SailPoint IdentityIQ Integration (December 2025)
-
-**NEW**: Integrated with SailPoint IdentityIQ for comprehensive identity lifecycle management and governance.
-
-#### Key Capabilities
-
-- **Identity Lifecycle Events**: Real-time processing of joiner/mover/leaver events
-- **Access Certification Sync**: Automatic synchronization of certification campaign results
-- **Identity Health Scoring**: Combined risk scoring using immune system detections + SailPoint data
-- **Webhook Support**: Receive and process SailPoint identity events
-- **Mock Mode**: Demo-ready with mock data for presentations
-
-#### Quick Setup
-
-```bash
-# Enable SailPoint integration
-export ENABLE_SAILPOINT_INTEGRATION=true
-export SAILPOINT_BASE_URL=https://sailpoint.company.com
-export SAILPOINT_CLIENT_ID=your_client_id
-export SAILPOINT_CLIENT_SECRET=your_secret
-
-# Or use mock mode for demos
-export SAILPOINT_MOCK_MODE=true
-```
-
-#### API Endpoints
-
-- `POST /sailpoint_webhook` - Receive SailPoint lifecycle events
-- `GET /certification_status` - View active certification campaigns
-- `GET /health_check` - System health including SailPoint integration status
-
-#### Identity Health Score
-
-Combines multiple risk factors:
-- IAM Immune System threat detections (40%)
-- SailPoint risk score (30%)
-- ML anomaly detection (30%)
-
-Score ranges from 0-100, with higher scores indicating healthier identities.
-
-### Machine Identity Monitoring
-
-**Critical Security Gap Addressed**: Machine identities now outnumber human identities 3:1 in enterprises, yet 90% are unmanaged.
-
-#### Detection Capabilities
-
-- **Service Account Anomaly Detection**: Identifies when service accounts access resources outside their normal scope
-- **API Key Lifecycle Monitoring**: Tracks API key usage from unexpected IPs/regions and enforces rotation policies
-- **Dormant Account Detection**: Alerts when service accounts inactive for 30+ days suddenly become active
-- **Privilege Escalation**: Detects service accounts modifying their own permissions or escalating privileges
-- **Cross-Account Usage**: Monitors and validates cross-account service account access
-- **Impersonation Chain Detection**: Identifies suspicious multi-hop service account impersonation
-- **CI/CD Credential Monitoring**: Verifies CI/CD pipeline credentials are used only from known infrastructure
-- **Service Account Key Age**: Enforces 90-day key rotation policies
-
-**Statistics**:
-- 68% of data breaches involve compromised machine credentials (Verizon DBIR 2024)
-- Average cost of machine identity breach: $4.45M
-- Machine identities growing 45x faster than human identities
-
-See [Machine Identity Documentation](docs/MACHINE_IDENTITY.md) for comprehensive guide.
-
-### Machine Learning
-
-- **Algorithm**: Isolation Forest (scikit-learn)
-- **Features**: 15+ behavioral features including time, resource type, action frequency
-- **Training**: Continuous learning on 30-day rolling window
-- **Accuracy**: 95%+ true positive rate, <2% false positive rate
-
-## Configuration
-
-### Detection Rules
-
-Edit `policies/detection_rules.yaml`:
-
-```yaml
-detectors:
-  public_bucket:
-    enabled: true
-    severity: critical
-    auto_remediate: true
-
-  admin_grant:
-    enabled: true
-    severity: high
-    auto_remediate: true
-    whitelist:
-      - "admin@company.com"
-      - "security-team@company.com"
-```
-
-### Remediation Playbooks
-
-Edit `policies/remediation_playbooks.yaml`:
-
-```yaml
-remediations:
-  revoke_access:
-    actions:
-      - type: iam_policy_detach
-      - type: notify_slack
-      - type: create_incident_ticket
-
-  block_public:
-    actions:
-      - type: s3_block_public_access
-      - type: notify_security_team
-```
-
-## API Documentation
-
-### Cloud Function Entry Point
-
-```python
-def handle_iam_event(cloud_event):
-    """
-    Main entry point for IAM event processing.
-
-    Args:
-        cloud_event: CloudEvent containing IAM event data
-
-    Returns:
-        dict: Processing result with status and actions taken
-    """
-```
-
-### Detector Interface
-
-```python
-class BaseDetector(ABC):
-    @abstractmethod
-    def detect(self, event: Dict[str, Any]) -> DetectionResult:
-        """
-        Analyze event for security threats.
-
-        Args:
-            event: IAM event data
-
-        Returns:
-            DetectionResult with risk_score, is_threat, and details
-        """
-```
-
-### Remediator Interface
-
-```python
-class BaseRemediator(ABC):
-    @abstractmethod
-    def remediate(self, detection: DetectionResult) -> RemediationResult:
-        """
-        Execute remediation actions.
-
-        Args:
-            detection: Detection result from detector
-
-        Returns:
-            RemediationResult with success status and actions taken
-        """
-```
-
-## Testing
-
-```bash
-# Run all tests
-pytest tests/
-
-# Run with coverage
-pytest --cov=functions tests/
-
-# Run specific test
-pytest tests/test_detectors.py::test_public_bucket_detection
-```
-
-## Deployment Verification
-
-This project is fully functional and production-ready. Comprehensive deployment evidence is available in [docs/DEPLOYMENT_EVIDENCE.md](docs/DEPLOYMENT_EVIDENCE.md).
-
-### Quick Verification Commands
-
-```bash
-# 1. Verify Cloud Function is running
-gcloud functions describe iam-immune-system \
-  --gen2 \
-  --region us-central1 \
-  --format='table(state,updateTime)'
-
-# Expected output:
-# STATE   UPDATE_TIME
-# ACTIVE  2024-11-30T12:34:56.789Z
-
-# 2. Test with sample event
-gcloud pubsub topics publish iam-events --message '{
-  "eventType": "IAM_POLICY_CHANGE",
-  "resource": "projects/test-project/buckets/test-bucket",
-  "principal": "user@example.com",
-  "action": "storage.buckets.setIamPolicy"
-}'
-
-# 3. Check function logs for processing
-gcloud functions logs read iam-immune-system \
-  --gen2 \
-  --region us-central1 \
-  --limit 5
-
-# Expected: Log entries showing event detection and processing
-```
-
-### Sample Output Evidence
-
-The deployment evidence documentation includes:
-- Sample detection event JSON with threat analysis
-- ML model prediction outputs (96.3% accuracy)
-- Remediation action logs showing automatic threat response
-- Terraform deployment output
-- Complete test suite results (94% code coverage)
-- Performance benchmarks (306ms avg processing time)
-
-See the full [Deployment Evidence](docs/DEPLOYMENT_EVIDENCE.md) for detailed verification steps and sample outputs.
-
-## Cost Analysis
-
-**Monthly Estimate: ~$15**
-
-| Service | Usage | Cost |
-|---------|-------|------|
-| Cloud Functions | 100K invocations | $0.40 |
-| Cloud Logging | 10GB | $5.00 |
-| Pub/Sub | 1M messages | $4.00 |
-| Eventarc | 100K events | $4.00 |
-| Storage | 5GB | $1.50 |
-
-See [detailed breakdown](docs/COST_ANALYSIS.md).
-
-## Security
-
-- All secrets stored in GCP Secret Manager
-- Least-privilege IAM roles
-- Encrypted data at rest and in transit
-- Regular security audits with Cloud Security Scanner
-- Compliance with SOC 2, PCI-DSS frameworks
-
-See [Security Documentation](docs/SECURITY.md) for threat model and controls.
-
-## Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## Architecture Decisions
-
-Key architectural decisions are documented in [docs/decisions/](docs/decisions/):
-
-- [ADR-001: GCP over AWS](docs/decisions/ADR-001-gcp-over-aws.md)
-
-## License
-
-This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details.
-
-## Frontend Dashboard
-
-A modern React/Next.js frontend is available with a bio-organic dark stealth aesthetic:
-
-```bash
+# Frontend setup (new terminal)
 cd frontend
 npm install
-npm run dev
 ```
 
-Frontend will open at `http://localhost:3000`
-- [x] SailPoint IdentityIQ integration (v1.1)
-- [ ] Support for Azure AD integration
-- [ ] Custom ML model training UI
-- [ ] Terraform module registry publication
-- [ ] Kubernetes RBAC monitoring
-- [ ] Compliance report generation (SOC 2, ISO 27001)
-- [ ] Okta integration
-- [ ] CyberArk PAM integration
+### Deploy Infrastructure
 
-## Support
+```bash
+# Initialize Terraform
+cd terraform
+terraform init
 
-- Documentation: [docs/](docs/)
-- Issues: [GitHub Issues](https://github.com/MikeDominic92/iam-immune-system/issues)
-- Email: security@mikedominic.dev
+# Deploy Cloud Functions
+terraform apply -var="project_id=your-project" -var="region=us-central1"
+```
 
-## Acknowledgments
+### Run Locally (Development)
 
-- AWS CloudTrail team for comprehensive event logging
-- GCP Eventarc team for serverless event routing
-- scikit-learn community for excellent ML libraries
+```bash
+# Start Frontend
+cd frontend && npm run dev
+
+# Functions run via Cloud Functions emulator
+functions-framework --target=handle_iam_event --debug
+```
+
+### Access Points
+- **Frontend**: http://localhost:3000
+- **Functions**: Deployed to GCP
 
 ---
 
-Built with security in mind by [MikeDominic92](https://github.com/MikeDominic92)
+## Cost Analysis
+
+Running IAM Immune System is extremely cost-effective:
+
+| Component | Monthly Cost | Notes |
+|-----------|-------------|-------|
+| Cloud Functions | ~$5 | 1M invocations |
+| Eventarc | ~$3 | Event routing |
+| BigQuery | ~$5 | 10GB storage |
+| Cloud Storage | ~$2 | Logs and state |
+| **Total** | **~$15/month** | Typical workload |
+
+See [Cost Analysis](docs/COST_ANALYSIS.md) for detailed breakdown.
+
+---
+
+## v1.1 SailPoint Integration Example
+
+```python
+from src.integrations import SailPointConnector, WebhookHandler, CertificationSync
+
+# Initialize connector (mock mode available)
+sailpoint = SailPointConnector(
+    base_url="https://company.identitynow.com",
+    client_id="your-client-id",
+    client_secret="your-secret",
+    mock_mode=True  # For demo
+)
+
+# Handle lifecycle webhook
+handler = WebhookHandler(secret_key="webhook-secret")
+
+@app.post("/sailpoint/webhook")
+async def handle_sailpoint_event(request: Request):
+    # Verify HMAC signature
+    if not handler.verify_signature(request):
+        raise HTTPException(401)
+
+    event = await request.json()
+
+    # Process lifecycle event
+    if event['type'] == 'JOINER':
+        # New employee - establish baseline
+        handler.process_joiner(event)
+    elif event['type'] == 'LEAVER':
+        # Termination - revoke all access
+        handler.process_leaver(event)
+
+    return {"status": "processed"}
+
+# Sync certification decisions
+cert_sync = CertificationSync(sailpoint)
+revocations = cert_sync.get_recent_revocations(days=7)
+```
+
+---
+
+## Use Cases
+
+<table>
+<tr>
+<td width="50%">
+
+### 1. Public Bucket Auto-Remediation
+
+**Scenario**: Developer accidentally makes bucket public.
+
+**Detection**: Public Bucket Detector triggers on IAM change.
+
+**Response**:
+1. Detect within 30 seconds
+2. Remove public binding automatically
+3. Alert security team
+4. Log incident for audit
+
+**Outcome**: Data exposure prevented.
+
+</td>
+<td width="50%">
+
+### 2. Terminated Employee Detection
+
+**Scenario**: Employee leaves but access remains.
+
+**Detection**: SailPoint LEAVER event received.
+
+**Response**:
+1. Receive webhook from SailPoint
+2. Correlate with active cloud permissions
+3. Revoke all IAM bindings
+4. Generate compliance report
+
+**Outcome**: Zero orphaned access.
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 3. Anomalous Admin Grant
+
+**Scenario**: Compromised account grants admin to attacker.
+
+**Detection**: Admin Grant + ML anomaly detection.
+
+**Response**:
+1. Detect unusual time/user pattern
+2. Risk score exceeds threshold
+3. Auto-revoke grant
+4. Quarantine account
+
+**Outcome**: Privilege escalation blocked.
+
+</td>
+<td width="50%">
+
+### 4. Access Certification Correlation
+
+**Scenario**: Certification revocation ignored.
+
+**Detection**: SailPoint cert decision not reflected in cloud.
+
+**Response**:
+1. Sync certification decisions
+2. Identify unrevoked access
+3. Auto-remove stale permissions
+4. Alert governance team
+
+**Outcome**: Cert decisions enforced automatically.
+
+</td>
+</tr>
+</table>
+
+---
+
+## Project Structure
+
+```
+iam-immune-system/
+├── functions/
+│   └── iam_monitor/
+│       ├── main.py              # Cloud Function entry
+│       ├── detectors/           # Threat detectors
+│       │   ├── public_bucket.py
+│       │   ├── admin_grant.py
+│       │   ├── policy_change.py
+│       │   └── machine_identity.py
+│       ├── remediators/         # Auto-remediation
+│       │   ├── block_public.py
+│       │   ├── revoke_access.py
+│       │   └── alert_team.py
+│       └── ml/                  # ML models
+│           ├── anomaly_detector.py
+│           └── baseline_builder.py
+├── src/
+│   └── integrations/            # v1.1: SailPoint
+│       ├── sailpoint_connector.py
+│       ├── webhook_handler.py
+│       └── certification_sync.py
+├── terraform/                   # Infrastructure as Code
+├── frontend/                    # React dashboard
+└── docs/                        # Documentation
+```
+
+---
+
+## Skills Demonstrated
+
+| Category | Technologies |
+|----------|-------------|
+| **Cloud Security** | GCP IAM, Cloud Functions, Eventarc |
+| **IGA Integration** | SailPoint IdentityIQ, Lifecycle Webhooks |
+| **Machine Learning** | Isolation Forest, Anomaly Detection |
+| **Infrastructure** | Terraform, Cloud Run, BigQuery |
+| **Backend** | Python, FastAPI, async/await |
+| **Frontend** | React, TypeScript, Dark Theme |
+
+---
+
+## Roadmap
+
+- [x] **v1.0**: Core detectors and remediators
+- [x] **v1.1**: SailPoint IdentityIQ integration
+- [ ] **v1.2**: Okta lifecycle integration
+- [ ] **v1.3**: AWS support (CloudTrail)
+- [ ] **v2.0**: SOAR playbook integration
+
+---
+
+## Author
+
+**Mike Dominic**
+- GitHub: [@MikeDominic92](https://github.com/MikeDominic92)
+- Focus: Cloud Security Automation + IGA
+
+---
+
+<p align="center">
+  <strong>Built to demonstrate serverless security automation with enterprise IGA integration.</strong>
+  <br/>
+  <sub>This is a portfolio project. Production deployment requires GCP infrastructure and SailPoint credentials.</sub>
+</p>
