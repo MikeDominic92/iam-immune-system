@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/screenshots/immune_dashboard_verification_1764616411409.png" alt="IAM Immune System" width="800"/>
+  <img src="docs/images/immune-status-new.png" alt="IAM Immune System" width="800"/>
 </p>
 
 <h1 align="center">IAM Immune System</h1>
@@ -63,7 +63,7 @@ Modern cloud security requires:
 ## The Solution: IAM Immune System
 
 <p align="center">
-  <img src="docs/screenshots/detection_center_verification_1764616434845.png" alt="Detection Center" width="800"/>
+  <img src="docs/images/immune-detection-new.png" alt="Detection Center" width="800"/>
 </p>
 
 Event-driven security automation powered by ML and IGA:
@@ -86,12 +86,12 @@ Event-driven security automation powered by ML and IGA:
 <table>
 <tr>
 <td align="center" width="33%">
-<img src="docs/screenshots/immune_dashboard_verification_1764616411409.png" alt="Dashboard"/>
+<img src="docs/images/immune-status-new.png" alt="Dashboard"/>
 <br/><strong>Immune Dashboard</strong>
 <br/>Bio-organic dark theme
 </td>
 <td align="center" width="33%">
-<img src="docs/screenshots/detection_center_verification_1764616434845.png" alt="Detection"/>
+<img src="docs/images/immune-detection-new.png" alt="Detection"/>
 <br/><strong>Detection Center</strong>
 <br/>Real-time threat view
 </td>
@@ -108,7 +108,7 @@ Event-driven security automation powered by ML and IGA:
 <table>
 <tr>
 <td align="center" width="50%">
-<img src="docs/screenshots/identity_monitor_verification_1764616478951.png" alt="Identity Monitor"/>
+<img src="docs/images/immune-identity-new.png" alt="Identity Monitor"/>
 <br/><strong>Identity Monitor</strong>
 <br/>SailPoint lifecycle events
 </td>
