@@ -96,7 +96,7 @@ Event-driven security automation powered by ML and IGA:
 <br/>Real-time threat view
 </td>
 <td align="center" width="33%">
-<img src="docs/screenshots/remediation_console_verification_1764616456695.png" alt="Remediation"/>
+<img src="docs/images/immune-remediation-new.png" alt="Remediation"/>
 <br/><strong>Remediation Console</strong>
 <br/>Auto-remediation logs
 </td>
@@ -113,7 +113,7 @@ Event-driven security automation powered by ML and IGA:
 <br/>SailPoint lifecycle events
 </td>
 <td align="center" width="50%">
-<img src="docs/screenshots/alert_management_verification_1764616502614.png" alt="Alerts"/>
+<img src="docs/images/immune-alerts-new.png" alt="Alerts"/>
 <br/><strong>Alert Management</strong>
 <br/>Multi-channel notifications
 </td>
