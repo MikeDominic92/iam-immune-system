@@ -7,6 +7,78 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-12-04
+
+### Added - SailPoint IdentityIQ Integration
+
+#### Core Integration
+- **SailPoint IdentityIQ REST API Connector** (`src/integrations/sailpoint_connector.py`)
+  - OAuth 2.0 authentication with automatic token refresh
+  - Identity retrieval and management
+  - Risk score calculation
+  - Entitlement queries
+  - Mock mode for demos and testing
+  - Comprehensive error handling and retry logic
+
+#### Identity Lifecycle Management
+- **Webhook Handler** (`src/integrations/webhook_handler.py`)
+  - Real-time processing of identity lifecycle events:
+    - Joiner events (new employee onboarding)
+    - Mover events (role/department changes)
+    - Leaver events (employee terminations)
+    - Reactivation and suspension events
+    - Access request/revocation events
+  - HMAC-SHA256 webhook signature verification
+  - Event enrichment with SailPoint identity data
+  - Risk score calculation per event type
+  - Identity health score computation
+
+#### Access Certification
+- **Certification Sync** (`src/integrations/certification_sync.py`)
+  - Access certification campaign retrieval
+  - Certification decision processing (approved/revoked/pending)
+  - Policy violation tracking
+  - Automatic remediation of revoked access
+  - Campaign completion rate tracking
+  - Recent revocations reporting
+
+#### Main System Integration
+- Enhanced `EventProcessor` class with SailPoint correlation
+- Identity correlation with IAM threat detections
+- Combined identity health scoring:
+  - IAM threat detection risk (40% weight)
+  - SailPoint risk score (30% weight)
+  - ML anomaly detection (30% weight)
+- New HTTP endpoints:
+  - `POST /sailpoint_webhook` - Receive SailPoint lifecycle events
+  - `GET /certification_status` - View active campaigns and revocations
+  - Enhanced `GET /health_check` with SailPoint integration status
+
+#### Configuration & Documentation
+- Updated `requirements.txt` with organized dependencies
+- Added comprehensive v1.1 section to README.md
+- Environment variable configuration:
+  - `ENABLE_SAILPOINT_INTEGRATION` - Enable/disable integration
+  - `SAILPOINT_BASE_URL` - SailPoint IdentityIQ URL
+  - `SAILPOINT_CLIENT_ID` - OAuth client ID
+  - `SAILPOINT_CLIENT_SECRET` - OAuth client secret
+  - `SAILPOINT_MOCK_MODE` - Demo mode toggle
+  - `SAILPOINT_WEBHOOK_SECRET` - Webhook signature verification
+
+### Enhanced
+- Health check endpoint now includes SailPoint integration status
+- Event processing includes identity correlation
+- System version updated to 1.1.0
+- Enhanced logging for identity lifecycle events
+
+### Technical Highlights
+- Full type hints throughout integration modules
+- Comprehensive docstrings and code comments
+- Mock mode for demos without SailPoint instance
+- Graceful degradation when SailPoint unavailable
+- Production-ready error handling
+- Retry logic with exponential backoff
+
 ## [1.0.0] - 2025-11-30
 
 ### Added
@@ -61,6 +133,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/MikeDominic92/iam-immune-system/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/MikeDominic92/iam-immune-system/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/MikeDominic92/iam-immune-system/releases/tag/v1.1.0
 [1.0.0]: https://github.com/MikeDominic92/iam-immune-system/releases/tag/v1.0.0
 [0.1.0]: https://github.com/MikeDominic92/iam-immune-system/releases/tag/v0.1.0

@@ -3,12 +3,19 @@ IAM Immune System - Cloud Function Entry Point
 
 This module serves as the main entry point for the IAM Immune System Cloud Function.
 It processes IAM events, runs detection logic, and triggers remediation actions.
+
+Version 1.1 - December 2025 Enhancement:
+    - Added SailPoint IdentityIQ integration
+    - Identity lifecycle event processing
+    - Access certification synchronization
+    - Identity health scoring
 """
 
 import base64
 import json
 import logging
 import os
+import sys
 from typing import Any, Dict, List, Optional
 from datetime import datetime
 
@@ -31,6 +38,20 @@ from remediators import (
 )
 from ml.anomaly_detector import AnomalyDetector
 
+# v1.1 Enhancement: Import SailPoint integration modules
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
+try:
+    from integrations import (
+        SailPointConnector,
+        WebhookHandler,
+        CertificationSync,
+        IdentityEventType
+    )
+    SAILPOINT_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"SailPoint integration not available: {e}")
+    SAILPOINT_AVAILABLE = False
+
 
 # Initialize Cloud Logging
 logging_client = cloud_logging.Client()
@@ -49,15 +70,55 @@ AUTO_REMEDIATION = os.getenv('AUTO_REMEDIATION', 'true').lower() == 'true'
 
 
 class EventProcessor:
-    """Processes IAM events through detection and remediation pipeline."""
+    """
+    Processes IAM events through detection and remediation pipeline.
+
+    v1.1 Enhancement: Added SailPoint IdentityIQ integration for identity
+    lifecycle management and access certification.
+    """
 
     def __init__(self):
         """Initialize the event processor with detectors and remediators."""
         self.detectors = self._initialize_detectors()
         self.remediators = self._initialize_remediators()
         self.anomaly_detector = AnomalyDetector()
+
+        # v1.1 Enhancement: Initialize SailPoint integration
+        self.sailpoint_connector = None
+        self.webhook_handler = None
+        self.certification_sync = None
+
+        if SAILPOINT_AVAILABLE and os.getenv('ENABLE_SAILPOINT_INTEGRATION', 'false').lower() == 'true':
+            self._initialize_sailpoint()
+
         logger.info("EventProcessor initialized with %d detectors and %d remediators",
                     len(self.detectors), len(self.remediators))
+
+    def _initialize_sailpoint(self):
+        """v1.1 Enhancement: Initialize SailPoint IdentityIQ integration."""
+        try:
+            self.sailpoint_connector = SailPointConnector(
+                mock_mode=os.getenv('SAILPOINT_MOCK_MODE', 'true').lower() == 'true'
+            )
+
+            self.webhook_handler = WebhookHandler(
+                self.sailpoint_connector,
+                webhook_secret=os.getenv('SAILPOINT_WEBHOOK_SECRET'),
+                mock_mode=os.getenv('SAILPOINT_MOCK_MODE', 'true').lower() == 'true'
+            )
+
+            self.certification_sync = CertificationSync(
+                self.sailpoint_connector,
+                auto_remediate=AUTO_REMEDIATION,
+                mock_mode=os.getenv('SAILPOINT_MOCK_MODE', 'true').lower() == 'true'
+            )
+
+            logger.info("SailPoint IdentityIQ integration initialized successfully")
+        except Exception as e:
+            logger.error(f"Failed to initialize SailPoint integration: {e}", exc_info=True)
+            self.sailpoint_connector = None
+            self.webhook_handler = None
+            self.certification_sync = None
 
     def _initialize_detectors(self) -> List:
         """Initialize all detection modules."""
@@ -158,6 +219,14 @@ class EventProcessor:
             except Exception as e:
                 logger.error(f"Error in ML analysis: {e}", exc_info=True)
 
+            # v1.1 Enhancement: Correlate with SailPoint identity data
+            if self.sailpoint_connector:
+                try:
+                    identity_correlation = self._correlate_with_sailpoint(event_data, results)
+                    results['sailpoint_correlation'] = identity_correlation
+                except Exception as e:
+                    logger.error(f"Error correlating with SailPoint: {e}", exc_info=True)
+
             # Publish results to alert topic
             if results['detections'] or (results['ml_analysis'] and
                                          results['ml_analysis']['is_anomaly']):
@@ -228,6 +297,103 @@ class EventProcessor:
         except Exception as e:
             logger.error(f"Error publishing alert: {e}", exc_info=True)
 
+    def _correlate_with_sailpoint(
+        self,
+        event_data: Dict[str, Any],
+        detection_results: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        v1.1 Enhancement: Correlate IAM event with SailPoint identity data.
+
+        Args:
+            event_data: Original IAM event
+            detection_results: Detection results
+
+        Returns:
+            Correlation data including identity health score
+        """
+        correlation = {
+            'identity_found': False,
+            'identity_health_score': None,
+            'sailpoint_risk_score': None,
+            'active_certifications': 0,
+            'recent_lifecycle_events': []
+        }
+
+        try:
+            # Extract identity information from event
+            identity_id = self._extract_identity_from_event(event_data)
+
+            if not identity_id:
+                return correlation
+
+            # Get identity from SailPoint
+            identity = self.sailpoint_connector.get_identity(identity_id)
+
+            if identity:
+                correlation['identity_found'] = True
+                correlation['identity_name'] = identity.name
+                correlation['identity_email'] = identity.email
+                correlation['identity_status'] = identity.status.value
+                correlation['department'] = identity.department
+
+                # Get risk score
+                risk_score = self.sailpoint_connector.get_identity_risk_score(identity_id)
+                correlation['sailpoint_risk_score'] = risk_score
+
+                # Calculate combined health score
+                immune_system_risk = max(
+                    [d.get('risk_score', 0) for d in detection_results.get('detections', [])],
+                    default=0
+                )
+                ml_risk = detection_results.get('ml_analysis', {}).get('anomaly_score', 0) * 100
+
+                # Combine scores (weighted average)
+                combined_risk = (immune_system_risk * 0.4 + risk_score * 0.3 + ml_risk * 0.3)
+                correlation['identity_health_score'] = max(0, 100 - combined_risk)
+
+                logger.info(
+                    f"Identity correlation: {identity.name} - "
+                    f"Health Score: {correlation['identity_health_score']:.2f}"
+                )
+
+            return correlation
+
+        except Exception as e:
+            logger.error(f"Error in SailPoint correlation: {e}", exc_info=True)
+            return correlation
+
+    def _extract_identity_from_event(self, event_data: Dict[str, Any]) -> Optional[str]:
+        """
+        Extract identity ID from IAM event.
+
+        Args:
+            event_data: IAM event data
+
+        Returns:
+            Identity ID or None
+        """
+        # Try various common identity fields
+        identity_fields = [
+            'userIdentity.principalId',
+            'userIdentity.userName',
+            'user',
+            'principal',
+            'actor',
+            'requestor'
+        ]
+
+        for field in identity_fields:
+            value = event_data
+            for key in field.split('.'):
+                value = value.get(key) if isinstance(value, dict) else None
+                if value is None:
+                    break
+            if value:
+                return str(value)
+
+        return None
+
 
 # Global processor instance
 processor = EventProcessor()
@@ -285,6 +451,8 @@ def health_check(request) -> tuple:
     """
     Health check endpoint for the Cloud Function.
 
+    v1.1 Enhancement: Added SailPoint integration health status.
+
     Args:
         request: HTTP request object
 
@@ -297,8 +465,14 @@ def health_check(request) -> tuple:
             'timestamp': datetime.utcnow().isoformat(),
             'detectors': len(processor.detectors),
             'remediators': len(processor.remediators),
-            'auto_remediation': AUTO_REMEDIATION
+            'auto_remediation': AUTO_REMEDIATION,
+            'version': '1.1.0'
         }
+
+        # v1.1 Enhancement: Add SailPoint health status
+        if processor.sailpoint_connector:
+            sailpoint_health = processor.sailpoint_connector.health_check()
+            health_status['sailpoint_integration'] = sailpoint_health
 
         return (json.dumps(health_status), 200, {'Content-Type': 'application/json'})
 
@@ -310,3 +484,132 @@ def health_check(request) -> tuple:
             'timestamp': datetime.utcnow().isoformat()
         }
         return (json.dumps(error_response), 503, {'Content-Type': 'application/json'})
+
+
+@functions_framework.http
+def sailpoint_webhook(request) -> tuple:
+    """
+    v1.1 Enhancement: Handle SailPoint IdentityIQ webhooks.
+
+    This endpoint receives identity lifecycle events from SailPoint including:
+    - Joiner events (new employees)
+    - Mover events (role changes)
+    - Leaver events (terminations)
+
+    Args:
+        request: HTTP request object
+
+    Returns:
+        Tuple of (response_body, status_code, headers)
+    """
+    if not processor.webhook_handler:
+        return (
+            json.dumps({'error': 'SailPoint integration not enabled'}),
+            503,
+            {'Content-Type': 'application/json'}
+        )
+
+    try:
+        # Get webhook signature for verification
+        signature = request.headers.get('X-SailPoint-Signature', '')
+
+        # Parse webhook payload
+        webhook_data = request.get_json()
+
+        if not webhook_data:
+            return (
+                json.dumps({'error': 'Invalid webhook payload'}),
+                400,
+                {'Content-Type': 'application/json'}
+            )
+
+        # Verify signature
+        if not processor.webhook_handler.verify_signature(
+            request.get_data(),
+            signature
+        ):
+            logger.warning("Invalid webhook signature")
+            return (
+                json.dumps({'error': 'Invalid signature'}),
+                401,
+                {'Content-Type': 'application/json'}
+            )
+
+        # Process webhook
+        event = processor.webhook_handler.process_webhook(webhook_data, signature)
+
+        if not event:
+            return (
+                json.dumps({'error': 'Failed to process webhook'}),
+                400,
+                {'Content-Type': 'application/json'}
+            )
+
+        response = {
+            'status': 'success',
+            'event_id': event.event_id,
+            'event_type': event.event_type.value,
+            'identity_id': event.identity_id,
+            'risk_score': event.calculate_risk_score(),
+            'timestamp': datetime.utcnow().isoformat()
+        }
+
+        logger.info(f"SailPoint webhook processed: {event.event_type.value} for {event.identity_name}")
+
+        return (json.dumps(response), 200, {'Content-Type': 'application/json'})
+
+    except Exception as e:
+        logger.error(f"Error processing SailPoint webhook: {e}", exc_info=True)
+        return (
+            json.dumps({'error': str(e)}),
+            500,
+            {'Content-Type': 'application/json'}
+        )
+
+
+@functions_framework.http
+def certification_status(request) -> tuple:
+    """
+    v1.1 Enhancement: Get access certification campaign status.
+
+    Returns current status of active certification campaigns and recent
+    revocation decisions.
+
+    Args:
+        request: HTTP request object
+
+    Returns:
+        Tuple of (response_body, status_code, headers)
+    """
+    if not processor.certification_sync:
+        return (
+            json.dumps({'error': 'SailPoint integration not enabled'}),
+            503,
+            {'Content-Type': 'application/json'}
+        )
+
+    try:
+        # Get active campaigns
+        campaigns = processor.certification_sync.get_active_campaigns()
+
+        # Get recent revocations (last 7 days)
+        revocations = processor.certification_sync.get_revocations(days=7)
+
+        response = {
+            'status': 'success',
+            'timestamp': datetime.utcnow().isoformat(),
+            'active_campaigns': len(campaigns),
+            'campaigns': [campaign.to_dict() for campaign in campaigns[:5]],  # Limit to 5
+            'recent_revocations': len(revocations),
+            'revocations': [rev.to_dict() for rev in revocations[:10]]  # Limit to 10
+        }
+
+        return (json.dumps(response), 200, {'Content-Type': 'application/json'})
+
+    except Exception as e:
+        logger.error(f"Error getting certification status: {e}", exc_info=True)
+        return (
+            json.dumps({'error': str(e)}),
+            500,
+            {'Content-Type': 'application/json'}
+        )

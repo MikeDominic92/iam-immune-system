@@ -7,6 +7,11 @@
 
 > Event-driven security automation that detects and auto-remediates dangerous IAM changes in real-time using AI/ML anomaly detection.
 
+## Screenshots
+
+### Dashboard Overview
+![Dashboard](docs/screenshots/iam_immune_dashboard_01.png)
+
 ## Overview
 
 IAM Immune System is a production-ready security orchestration platform that monitors AWS IAM events, detects suspicious activities, and automatically remediates threats before they cause damage. Think of it as an immune system for your cloud infrastructure.
@@ -104,6 +109,46 @@ gcloud functions deploy iam-immune-system \
 | Service Account Key Creation | Baseline deviation | Disable key |
 | Privilege Escalation | Attack pattern matching | Revoke + quarantine |
 | Machine Identity Threats | Behavioral analysis + pattern matching | Alert + credential rotation |
+
+### v1.1 SailPoint IdentityIQ Integration (December 2025)
+
+**NEW**: Integrated with SailPoint IdentityIQ for comprehensive identity lifecycle management and governance.
+
+#### Key Capabilities
+
+- **Identity Lifecycle Events**: Real-time processing of joiner/mover/leaver events
+- **Access Certification Sync**: Automatic synchronization of certification campaign results
+- **Identity Health Scoring**: Combined risk scoring using immune system detections + SailPoint data
+- **Webhook Support**: Receive and process SailPoint identity events
+- **Mock Mode**: Demo-ready with mock data for presentations
+
+#### Quick Setup
+
+```bash
+# Enable SailPoint integration
+export ENABLE_SAILPOINT_INTEGRATION=true
+export SAILPOINT_BASE_URL=https://sailpoint.company.com
+export SAILPOINT_CLIENT_ID=your_client_id
+export SAILPOINT_CLIENT_SECRET=your_secret
+
+# Or use mock mode for demos
+export SAILPOINT_MOCK_MODE=true
+```
+
+#### API Endpoints
+
+- `POST /sailpoint_webhook` - Receive SailPoint lifecycle events
+- `GET /certification_status` - View active certification campaigns
+- `GET /health_check` - System health including SailPoint integration status
+
+#### Identity Health Score
+
+Combines multiple risk factors:
+- IAM Immune System threat detections (40%)
+- SailPoint risk score (30%)
+- ML anomaly detection (30%)
+
+Score ranges from 0-100, with higher scores indicating healthier identities.
 
 ### Machine Identity Monitoring
 
@@ -333,23 +378,14 @@ npm run dev
 ```
 
 Frontend will open at `http://localhost:3000`
-
-**Frontend Screenshots:**
-
-| Dashboard | Detection Center | Remediation |
-|-----------|-----------------|-------------|
-| ![Dashboard](docs/screenshots/immune_dashboard_verification_1764616411409.png) | ![Detection](docs/screenshots/detection_center_verification_1764616434845.png) | ![Remediation](docs/screenshots/remediation_console_verification_1764616456695.png) |
-
-See [Frontend Walkthrough](docs/FRONTEND_WALKTHROUGH.md) for full documentation.
-
-## Roadmap
-
-- [x] React dashboard frontend
+- [x] SailPoint IdentityIQ integration (v1.1)
 - [ ] Support for Azure AD integration
 - [ ] Custom ML model training UI
 - [ ] Terraform module registry publication
 - [ ] Kubernetes RBAC monitoring
 - [ ] Compliance report generation (SOC 2, ISO 27001)
+- [ ] Okta integration
+- [ ] CyberArk PAM integration
 
 ## Support
 
